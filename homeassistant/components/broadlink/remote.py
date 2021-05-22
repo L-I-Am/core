@@ -60,7 +60,7 @@ COMMAND_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_COMMAND): vol.All(
             cv.ensure_list, [vol.All(cv.string, vol.Length(min=1))], vol.Length(min=1)
-        ),
+        )
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -477,9 +477,7 @@ class BroadlinkRemote(RemoteEntity, RestoreEntity):
 
         if not self._state:
             _LOGGER.warning(
-                "%s canceled: %s entity is turned off",
-                service,
-                self.entity_id,
+                "%s canceled: %s entity is turned off", service, self.entity_id
             )
             return
 
