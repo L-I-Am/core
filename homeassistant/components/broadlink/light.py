@@ -65,16 +65,17 @@ class BroadlinkLight(BroadlinkEntity, LightEntity):
         if "brightness" in data:
             self._attr_brightness = round(data["brightness"] * 2.55)
 
+        if self.supported_color_modes == {COLOR_MODE_BRIGHTNESS}:
+            self._attr_color_mode = COLOR_MODE_BRIGHTNESS
+            return
+
         if {"hue", "saturation"}.issubset(data):
             self._attr_hs_color = [data["hue"], data["saturation"]]
 
         if "colortemp" in data:
             self._attr_color_temp = round((data["colortemp"] - 2700) / 100 + 153)
 
-        if self.supported_color_modes == {COLOR_MODE_BRIGHTNESS}:
-            self._attr_color_mode = COLOR_MODE_BRIGHTNESS
-
-        elif "bulb_colormode" in data:
+        if "bulb_colormode" in data:
             if data["bulb_colormode"] == BROADLINK_COLOR_MODE_RGB:
                 self._attr_color_mode = COLOR_MODE_HS
             elif data["bulb_colormode"] == BROADLINK_COLOR_MODE_WHITE:
