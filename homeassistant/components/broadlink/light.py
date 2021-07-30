@@ -60,7 +60,7 @@ class BroadlinkLight(BroadlinkEntity, LightEntity):
     def _update_state(self, data):
         """Update the state of the entity."""
         if "pwr" in data:
-            self._is_on = data["pwr"]
+            self._attr_is_on = data["pwr"]
 
         if "brightness" in data:
             self._attr_brightness = round(data["brightness"] * 2.55)
@@ -91,16 +91,18 @@ class BroadlinkLight(BroadlinkEntity, LightEntity):
             brightness = kwargs[ATTR_BRIGHTNESS]
             state["brightness"] = round(brightness / 2.55)
 
-        if ATTR_HS_COLOR in kwargs:
+        if self.supported_color_modes == {COLOR_MODE_BRIGHTNESS}:
+            state["bulb_colormode"] = BROADLINK_COLOR_MODE_WHITE
+
+        elif ATTR_HS_COLOR in kwargs:
             hs_color = kwargs[ATTR_HS_COLOR]
             state["hue"] = int(hs_color[0])
             state["saturation"] = int(hs_color[1])
+            state["bulb_colormode"] = BROADLINK_COLOR_MODE_RGB
 
-        if ATTR_COLOR_TEMP in kwargs:
+        elif ATTR_COLOR_TEMP in kwargs:
             color_temp = kwargs[ATTR_COLOR_TEMP]
             state["colortemp"] = (color_temp - 153) * 100 + 2700
-
-        if self.supported_color_modes == {COLOR_MODE_BRIGHTNESS}:
             state["bulb_colormode"] = BROADLINK_COLOR_MODE_WHITE
 
         elif ATTR_COLOR_MODE in kwargs:
